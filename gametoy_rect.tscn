@@ -1,11 +1,11 @@
-[gd_scene load_steps=27 format=3 uid="uid://bmhq3yhif660a"]
+[gd_scene load_steps=28 format=3 uid="uid://bmhq3yhif660a"]
 
 [ext_resource type="Script" path="res://screen.gd" id="1_g8a8x"]
 [ext_resource type="Script" path="res://BoardViewport.gd" id="3_1cd40"]
 [ext_resource type="Material" uid="uid://b7a63l5ax6qf7" path="res://outline.tres" id="3_jythu"]
 [ext_resource type="Shader" path="res://outline.gdshader" id="4_47lml"]
 [ext_resource type="Environment" uid="uid://cbwwarcu5f3ir" path="res://camera_transparent_bg_environment.tres" id="4_au1o7"]
-[ext_resource type="PackedScene" uid="uid://bodcunp76a58r" path="res://02-board-hires.tscn" id="5_qergf"]
+[ext_resource type="PackedScene" uid="uid://br5b6tb4su3y8" path="res://03-oner.tscn" id="6_1o1hr"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_e3j3d"]
 frequency = 0.02
@@ -60,7 +60,10 @@ emission = Color(1, 1, 1, 1)
 emission_operator = 1
 emission_texture = SubResource("ViewportTexture_ri5ib")
 heightmap_enabled = true
-heightmap_scale = 10.0
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
 subsurf_scatter_strength = 0.5
 subsurf_scatter_skin_mode = true
 subsurf_scatter_texture = SubResource("NoiseTexture2D_4pq8v")
@@ -68,6 +71,8 @@ backlight_enabled = true
 backlight = Color(1, 1, 1, 1)
 backlight_texture = SubResource("NoiseTexture2D_ra2cn")
 refraction_scale = 1.0
+uv1_scale = Vector3(0.8, 0.8, 0.8)
+uv1_offset = Vector3(0.1, 0.1, 0.1)
 texture_filter = 2
 texture_repeat = false
 
@@ -82,6 +87,9 @@ shader = ExtResource("4_47lml")
 shader_parameter/enable = true
 shader_parameter/outline_thickness = 0.015
 shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ql4er"]
+dof_blur_near_distance = 5.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1iwgv"]
 radius = 0.1
@@ -99,7 +107,6 @@ wobble_perlin_x = SubResource("FastNoiseLite_e3j3d")
 wobble_perlin_y = SubResource("FastNoiseLite_7ff6m")
 wobble_perlin_z = SubResource("FastNoiseLite_xy4cx")
 wobble_amp = Vector3(0.6, 0.4, 0.2)
-drag_tilt_amp = Vector3(1, 0.75, 0.5)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("4_au1o7")
@@ -140,6 +147,7 @@ surface_material_override/0 = SubResource("ShaderMaterial_bs23b")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 environment = ExtResource("4_au1o7")
+attributes = SubResource("CameraAttributesPractical_ql4er")
 current = true
 fov = 25.0
 
@@ -176,10 +184,10 @@ visible = false
 mesh = SubResource("SphereMesh_clkui")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(510, 510)
+size = Vector2i(200, 200)
 script = ExtResource("3_1cd40")
 
-[node name="02-board-hires" parent="SubViewport" instance=ExtResource("5_qergf")]
+[node name="03-onmer" parent="SubViewport" instance=ExtResource("6_1o1hr")]
 
 [node name="Debug-ShowGame" type="VBoxContainer" parent="."]
 visible = false

@@ -43,6 +43,8 @@ func _notification(blah):
 
 func _ready():
 	
+	get_window().transparent_bg = true
+	
 	wobble_toff = randf() * 99999
 	
 	if outline_node: outline_node.hide()
@@ -91,6 +93,8 @@ func _physics_process(delta):
 	angle_facing.z = lerp(angle_facing.z, min_window_velocity.x * drag_tilt_amp.z, 0.1)
 	if angle_facing.length() > 0.2:
 		angle_facing *= 0.95
+	if angle_facing.length() > 1.3:
+		angle_facing *= 0.90
 	angle_facing += base_angle
 	var window_mouse_pos = get_window().get_mouse_position()
 	var monitor_mouse_pos = (get_window().position as Vector2 + window_mouse_pos)
@@ -131,7 +135,7 @@ func _physics_process(delta):
 			var desired_window_position = drag_start_window_pos + (monitor_mouse_pos as Vector2i - drag_start_monitor_mouse_pos)
 			var to_desired_window_position = desired_window_position - get_window().position
 			window_velocity = lerp(window_velocity, to_desired_window_position as Vector2, 0.5)
-			get_window().position += to_desired_window_position
+			get_window().position += to_desired_window_position / 4
 		#elif not hovering_over:
 			#$Camera3D.environment.background_color = Color(.1,.1,.1,.1)
 	else:
