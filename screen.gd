@@ -98,7 +98,7 @@ func _physics_process(delta):
 	var rtarget = $Camera3D.project_ray_normal(window_mouse_pos) * 100
 	var toggle_hover : bool = false
 	
-	$Camera3D.environment.background_color = Color(0,0,0,0)
+	#$Camera3D.environment.background_color = Color(0,0,0,0)
 	
 	if between_resize_buf > 0:
 		between_resize_buf -= 1
@@ -132,8 +132,8 @@ func _physics_process(delta):
 			var to_desired_window_position = desired_window_position - get_window().position
 			window_velocity = lerp(window_velocity, to_desired_window_position as Vector2, 0.5)
 			get_window().position += to_desired_window_position
-		elif not hovering_over:
-			$Camera3D.environment.background_color = Color(.1,.1,.1,.1)
+		#elif not hovering_over:
+			#$Camera3D.environment.background_color = Color(.1,.1,.1,.1)
 	else:
 		if dragging:
 			dragging = false
