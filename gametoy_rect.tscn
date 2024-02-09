@@ -1,0 +1,116 @@
+[gd_scene load_steps=17 format=3 uid="uid://bmhq3yhif660a"]
+
+[ext_resource type="Script" path="res://screen.gd" id="1_g8a8x"]
+[ext_resource type="Script" path="res://BoardViewport.gd" id="3_1cd40"]
+[ext_resource type="Material" uid="uid://b7a63l5ax6qf7" path="res://outline.tres" id="3_jythu"]
+[ext_resource type="PackedScene" uid="uid://by6bh8fx7rbs3" path="res://test_screen_board.tscn" id="4_v8pal"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_eep7e"]
+frequency = 0.05
+offset = Vector3(-252.43, 0, 0)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wsqim"]
+seed = 1
+frequency = 0.05
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jkifu"]
+seed = 2
+frequency = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r54xn"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_ak8ev"]
+material = SubResource("StandardMaterial3D_r54xn")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ri5ib"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_syf4u"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_ri5ib")
+
+[sub_resource type="BoxMesh" id="BoxMesh_fqtfk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aikng"]
+size = Vector3(1.082, 1.082, 0.053)
+
+[sub_resource type="Environment" id="Environment_h2k28"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1iwgv"]
+radius = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_clkui"]
+
+[node name="gametoy_rect" type="Node3D" node_paths=PackedStringArray("outline_node", "tiltable_model")]
+script = ExtResource("1_g8a8x")
+outline_node = NodePath("gametoy_model/RigidBody3D/GametoyOutline")
+tiltable_model = NodePath("gametoy_model")
+wobble_perlin_x = SubResource("FastNoiseLite_eep7e")
+wobble_perlin_y = SubResource("FastNoiseLite_wsqim")
+wobble_perlin_z = SubResource("FastNoiseLite_jkifu")
+wobble_amp = Vector3(0.6, 0.4, 0.2)
+drag_tilt_amp = Vector3(1, 0.75, 0.5)
+
+[node name="gametoy_model" type="Node3D" parent="."]
+
+[node name="GametoyScreen" type="MeshInstance3D" parent="gametoy_model"]
+mesh = SubResource("QuadMesh_ak8ev")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_syf4u")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="gametoy_model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.035)
+gravity_scale = 0.0
+
+[node name="GametoyModel" type="MeshInstance3D" parent="gametoy_model/RigidBody3D"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../..")
+
+[node name="GametoyOutline" type="MeshInstance3D" parent="gametoy_model/RigidBody3D"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("3_jythu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="gametoy_model/RigidBody3D"]
+shape = SubResource("BoxShape3D_aikng")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+environment = SubResource("Environment_h2k28")
+current = true
+fov = 25.0
+
+[node name="Label3D" type="Label3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.10202)
+visible = false
+text = "Test"
+font_size = 16
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.863457, 0.504422, 0, -0.504422, 0.863457, 0, 1.76311, 0)
+light_energy = 2.0
+
+[node name="UnderLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.76311, 0)
+light_energy = 0.1
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_1iwgv")
+target_position = Vector3(0, 0, 0)
+
+[node name="bg" type="MeshInstance3D" parent="."]
+transform = Transform3D(-25, -2.18557e-06, 0, 2.18557e-06, -25, 0, 0, 0, -0.291, 0, 0, -6.46026)
+visible = false
+mesh = SubResource("SphereMesh_clkui")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+size = Vector2i(128, 128)
+script = ExtResource("3_1cd40")
+
+[node name="TestScreenBoard" parent="SubViewport" instance=ExtResource("4_v8pal")]
