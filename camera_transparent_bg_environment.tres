@@ -1,0 +1,12 @@
+[gd_resource type="Environment" format=3 uid="uid://cbwwarcu5f3ir"]
+
+[resource]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+ssr_fade_in = 0.344609
+ssr_fade_out = 1.0
+ssr_depth_tolerance = 128.0
+glow_normalized = true
+glow_strength = 1.59
+glow_mix = 0.291
+glow_blend_mode = 1
