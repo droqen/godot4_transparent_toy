@@ -1,0 +1,88 @@
+[gd_scene load_steps=12 format=3 uid="uid://dadufkjbnhm46"]
+
+[ext_resource type="Script" path="res://screen.gd" id="1_0pdns"]
+[ext_resource type="Script" path="res://AutoRotate.gd" id="1_rfl1e"]
+[ext_resource type="Material" uid="uid://b7a63l5ax6qf7" path="res://outline.tres" id="3_t04b5"]
+[ext_resource type="PackedScene" uid="uid://by6bh8fx7rbs3" path="res://test_screen_board.tscn" id="4_0a6ae"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r54xn"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_ak8ev"]
+material = SubResource("StandardMaterial3D_r54xn")
+
+[sub_resource type="Environment" id="Environment_h2k28"]
+background_mode = 1
+background_color = Color(0, 0, 0, 0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5nneo"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ees6k"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1iwgv"]
+radius = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_clkui"]
+
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("outline_node")]
+script = ExtResource("1_0pdns")
+outline_node = NodePath("AutoRotate/RigidBody3D/OutlineMesh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("QuadMesh_ak8ev")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+environment = SubResource("Environment_h2k28")
+current = true
+fov = 52.0
+
+[node name="Label3D" type="Label3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.10202)
+visible = false
+text = "Test"
+font_size = 16
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 1.76311, 0)
+
+[node name="UnderLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.76311, 0)
+light_energy = 0.1
+
+[node name="AutoRotate" type="Node3D" parent="."]
+transform = Transform3D(-0.728497, 0.684664, -0.0229733, 0.649629, 0.679797, -0.34038, -0.217428, -0.26289, -0.940007, 0, 0, 0)
+script = ExtResource("1_rfl1e")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="AutoRotate"]
+gravity_scale = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AutoRotate/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_5nneo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AutoRotate/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_ees6k")
+skeleton = NodePath("../../..")
+
+[node name="OutlineMesh" type="MeshInstance3D" parent="AutoRotate/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("BoxMesh_ees6k")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("3_t04b5")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_1iwgv")
+target_position = Vector3(0, 0, 0)
+
+[node name="bg" type="MeshInstance3D" parent="."]
+transform = Transform3D(-25, -2.18557e-06, 0, 2.18557e-06, -25, 0, 0, 0, -0.291, 0, 0, -6.46026)
+visible = false
+mesh = SubResource("SphereMesh_clkui")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="TestScreenBoard" parent="SubViewport" instance=ExtResource("4_0a6ae")]

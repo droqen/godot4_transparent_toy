@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b7a63l5ax6qf7"]
+
+[ext_resource type="Shader" path="res://outline.gdshader" id="1_scwoa"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_scwoa")
+shader_parameter/enable = true
+shader_parameter/outline_thickness = 0.02
+shader_parameter/color = Color(0, 0, 0, 0)
