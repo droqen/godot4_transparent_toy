@@ -1,21 +1,23 @@
-[gd_scene load_steps=17 format=3 uid="uid://bmhq3yhif660a"]
+[gd_scene load_steps=27 format=3 uid="uid://bmhq3yhif660a"]
 
 [ext_resource type="Script" path="res://screen.gd" id="1_g8a8x"]
 [ext_resource type="Script" path="res://BoardViewport.gd" id="3_1cd40"]
 [ext_resource type="Material" uid="uid://b7a63l5ax6qf7" path="res://outline.tres" id="3_jythu"]
-[ext_resource type="PackedScene" uid="uid://by6bh8fx7rbs3" path="res://test_screen_board.tscn" id="4_v8pal"]
+[ext_resource type="Shader" path="res://outline.gdshader" id="4_47lml"]
+[ext_resource type="Environment" uid="uid://cbwwarcu5f3ir" path="res://camera_transparent_bg_environment.tres" id="4_au1o7"]
+[ext_resource type="PackedScene" uid="uid://bodcunp76a58r" path="res://02-board-hires.tscn" id="5_qergf"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_eep7e"]
-frequency = 0.05
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_e3j3d"]
+frequency = 0.02
 offset = Vector3(-252.43, 0, 0)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wsqim"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7ff6m"]
 seed = 1
-frequency = 0.05
+frequency = 0.02
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_jkifu"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xy4cx"]
 seed = 2
-frequency = 0.05
+frequency = 0.02
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r54xn"]
 
@@ -25,33 +27,82 @@ material = SubResource("StandardMaterial3D_r54xn")
 [sub_resource type="ViewportTexture" id="ViewportTexture_ri5ib"]
 viewport_path = NodePath("SubViewport")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1bgmf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ra2cn"]
+noise = SubResource("FastNoiseLite_1bgmf")
+
+[sub_resource type="Gradient" id="Gradient_013iw"]
+colors = PackedColorArray(0.473976, 0.473976, 0.473976, 1, 0.791999, 0.791999, 0.791999, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xksef"]
+noise_type = 3
+fractal_lacunarity = 5.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bjyo"]
+width = 128
+seamless = true
+as_normal_map = true
+color_ramp = SubResource("Gradient_013iw")
+noise = SubResource("FastNoiseLite_xksef")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8qmpk"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4pq8v"]
+noise = SubResource("FastNoiseLite_8qmpk")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_syf4u"]
 resource_local_to_scene = true
 albedo_texture = SubResource("ViewportTexture_ri5ib")
+roughness = 0.96
+roughness_texture = SubResource("NoiseTexture2D_1bjyo")
+emission = Color(1, 1, 1, 1)
+emission_operator = 1
+emission_texture = SubResource("ViewportTexture_ri5ib")
+heightmap_enabled = true
+heightmap_scale = 10.0
+subsurf_scatter_strength = 0.5
+subsurf_scatter_skin_mode = true
+subsurf_scatter_texture = SubResource("NoiseTexture2D_4pq8v")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+backlight_texture = SubResource("NoiseTexture2D_ra2cn")
+refraction_scale = 1.0
+texture_filter = 2
+texture_repeat = false
 
 [sub_resource type="BoxMesh" id="BoxMesh_fqtfk"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_aikng"]
 size = Vector3(1.082, 1.082, 0.053)
 
-[sub_resource type="Environment" id="Environment_h2k28"]
-background_mode = 1
-background_color = Color(0, 0, 0, 0)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bs23b"]
+render_priority = 0
+shader = ExtResource("4_47lml")
+shader_parameter/enable = true
+shader_parameter/outline_thickness = 0.015
+shader_parameter/color = Color(0, 0, 0, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_1iwgv"]
 radius = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_clkui"]
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_s3cao"]
+viewport_path = NodePath("SubViewport")
+
 [node name="gametoy_rect" type="Node3D" node_paths=PackedStringArray("outline_node", "tiltable_model")]
 script = ExtResource("1_g8a8x")
-outline_node = NodePath("gametoy_model/RigidBody3D/GametoyOutline")
+outline_node = NodePath("gametoy_model/RigidBody3D/outlines")
 tiltable_model = NodePath("gametoy_model")
-wobble_perlin_x = SubResource("FastNoiseLite_eep7e")
-wobble_perlin_y = SubResource("FastNoiseLite_wsqim")
-wobble_perlin_z = SubResource("FastNoiseLite_jkifu")
+wobble_perlin_x = SubResource("FastNoiseLite_e3j3d")
+wobble_perlin_y = SubResource("FastNoiseLite_7ff6m")
+wobble_perlin_z = SubResource("FastNoiseLite_xy4cx")
 wobble_amp = Vector3(0.6, 0.4, 0.2)
 drag_tilt_amp = Vector3(1, 0.75, 0.5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("4_au1o7")
 
 [node name="gametoy_model" type="Node3D" parent="."]
 
@@ -69,18 +120,26 @@ transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-0
 mesh = SubResource("BoxMesh_fqtfk")
 skeleton = NodePath("../../..")
 
-[node name="GametoyOutline" type="MeshInstance3D" parent="gametoy_model/RigidBody3D"]
-transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
-mesh = SubResource("BoxMesh_fqtfk")
-skeleton = NodePath("../../..")
-surface_material_override/0 = ExtResource("3_jythu")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="gametoy_model/RigidBody3D"]
 shape = SubResource("BoxShape3D_aikng")
 
+[node name="outlines" type="Node3D" parent="gametoy_model/RigidBody3D"]
+
+[node name="GametoyOutline" type="MeshInstance3D" parent="gametoy_model/RigidBody3D/outlines"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("3_jythu")
+
+[node name="GametoyOutline2" type="MeshInstance3D" parent="gametoy_model/RigidBody3D/outlines"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = SubResource("ShaderMaterial_bs23b")
+
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
-environment = SubResource("Environment_h2k28")
+environment = ExtResource("4_au1o7")
 current = true
 fov = 25.0
 
@@ -90,9 +149,16 @@ visible = false
 text = "Test"
 font_size = 16
 
+[node name="TestWideLabel" type="Label3D" parent="Camera3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -2.46092)
+visible = false
+text = "Test label, test label
+This is a test label...
+How long can I go on like this?
+It's a test."
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.863457, 0.504422, 0, -0.504422, 0.863457, 0, 1.76311, 0)
-light_energy = 2.0
+transform = Transform3D(1, 0, 0, 0, 0.642787, 0.766044, 0, -0.766044, 0.642787, 0, 1.76311, 0)
 
 [node name="UnderLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.76311, 0)
@@ -110,7 +176,20 @@ visible = false
 mesh = SubResource("SphereMesh_clkui")
 
 [node name="SubViewport" type="SubViewport" parent="."]
-size = Vector2i(128, 128)
+size = Vector2i(510, 510)
 script = ExtResource("3_1cd40")
 
-[node name="TestScreenBoard" parent="SubViewport" instance=ExtResource("4_v8pal")]
+[node name="02-board-hires" parent="SubViewport" instance=ExtResource("5_qergf")]
+
+[node name="Debug-ShowGame" type="VBoxContainer" parent="."]
+visible = false
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Debug-ShowGame"]
+layout_mode = 2
+texture = SubResource("ViewportTexture_s3cao")
+
+[node name="Label" type="Label" parent="Debug-ShowGame"]
+layout_mode = 2
+text = "Debug"
