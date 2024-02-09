@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="18-3dmodel-transparent-dragger"
+config/name="Transparent Toy"
 run/main_scene="res://screen.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://icon.png"
 
 [display]
 

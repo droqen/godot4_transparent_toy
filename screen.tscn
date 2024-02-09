@@ -58,16 +58,13 @@ script = ExtResource("1_rfl1e")
 gravity_scale = 0.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="AutoRotate/RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("BoxShape3D_5nneo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="AutoRotate/RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_ees6k")
 skeleton = NodePath("../../..")
 
 [node name="OutlineMesh" type="MeshInstance3D" parent="AutoRotate/RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_ees6k")
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("3_t04b5")
