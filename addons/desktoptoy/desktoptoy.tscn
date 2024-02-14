@@ -1,0 +1,171 @@
+[gd_scene load_steps=26 format=3 uid="uid://cwioo4wbswuy6"]
+
+[ext_resource type="Script" path="res://addons/desktoptoy/desktoptoy.gd" id="1_2pmim"]
+[ext_resource type="Environment" uid="uid://cbwwarcu5f3ir" path="res://camera_transparent_bg_environment.tres" id="2_8wkoh"]
+[ext_resource type="Material" uid="uid://b7a63l5ax6qf7" path="res://outline.tres" id="3_e7lfc"]
+[ext_resource type="Shader" path="res://outline.gdshader" id="4_dhexs"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0pwc6"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bpba7"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ikjtg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r54xn"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_ak8ev"]
+material = SubResource("StandardMaterial3D_r54xn")
+
+[sub_resource type="Gradient" id="Gradient_cpl22"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5bdxk"]
+gradient = SubResource("Gradient_cpl22")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1bgmf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ra2cn"]
+noise = SubResource("FastNoiseLite_1bgmf")
+
+[sub_resource type="Gradient" id="Gradient_013iw"]
+colors = PackedColorArray(0.473976, 0.473976, 0.473976, 1, 0.791999, 0.791999, 0.791999, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xksef"]
+noise_type = 3
+fractal_lacunarity = 5.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bjyo"]
+width = 128
+seamless = true
+as_normal_map = true
+color_ramp = SubResource("Gradient_013iw")
+noise = SubResource("FastNoiseLite_xksef")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8qmpk"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4pq8v"]
+noise = SubResource("FastNoiseLite_8qmpk")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_syf4u"]
+albedo_texture = SubResource("GradientTexture2D_5bdxk")
+roughness = 0.96
+roughness_texture = SubResource("NoiseTexture2D_1bjyo")
+heightmap_enabled = true
+heightmap_scale = 16.0
+heightmap_deep_parallax = true
+heightmap_min_layers = 8
+heightmap_max_layers = 32
+subsurf_scatter_strength = 0.5
+subsurf_scatter_skin_mode = true
+subsurf_scatter_texture = SubResource("NoiseTexture2D_4pq8v")
+backlight_enabled = true
+backlight = Color(1, 1, 1, 1)
+backlight_texture = SubResource("NoiseTexture2D_ra2cn")
+refraction_scale = 1.0
+uv1_scale = Vector3(0.8, 0.8, 0.8)
+uv1_offset = Vector3(0.1, 0.1, 0.1)
+texture_filter = 2
+texture_repeat = false
+
+[sub_resource type="BoxMesh" id="BoxMesh_fqtfk"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_aikng"]
+size = Vector3(1.082, 1.082, 0.053)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bs23b"]
+render_priority = 0
+shader = ExtResource("4_dhexs")
+shader_parameter/enable = true
+shader_parameter/outline_thickness = 0.015
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ql4er"]
+dof_blur_near_distance = 5.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1iwgv"]
+radius = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_clkui"]
+
+[node name="desktoptoy" type="Node3D" node_paths=PackedStringArray("outline_node", "tiltable_model")]
+script = ExtResource("1_2pmim")
+outline_node = NodePath("gametoy_model/RigidBody3D/outlines")
+tiltable_model = NodePath("gametoy_model")
+wobble_perlin_x = SubResource("FastNoiseLite_0pwc6")
+wobble_perlin_y = SubResource("FastNoiseLite_bpba7")
+wobble_perlin_z = SubResource("FastNoiseLite_ikjtg")
+wobble_amp = Vector3(0.6, 0.4, 0.2)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_8wkoh")
+
+[node name="gametoy_model" type="Node3D" parent="."]
+
+[node name="GametoyScreen" type="MeshInstance3D" parent="gametoy_model"]
+mesh = SubResource("QuadMesh_ak8ev")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_syf4u")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="gametoy_model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.035)
+gravity_scale = 0.0
+
+[node name="GametoyModel" type="MeshInstance3D" parent="gametoy_model/RigidBody3D"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="gametoy_model/RigidBody3D"]
+shape = SubResource("BoxShape3D_aikng")
+
+[node name="outlines" type="Node3D" parent="gametoy_model/RigidBody3D"]
+
+[node name="GametoyOutline" type="MeshInstance3D" parent="gametoy_model/RigidBody3D/outlines"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("3_e7lfc")
+
+[node name="GametoyOutline2" type="MeshInstance3D" parent="gametoy_model/RigidBody3D/outlines"]
+transform = Transform3D(1.082, 0, 0, 0, 1.082, 0, 0, 0, 0.053, 0, 0, -2.17184e-06)
+mesh = SubResource("BoxMesh_fqtfk")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = SubResource("ShaderMaterial_bs23b")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+environment = ExtResource("2_8wkoh")
+attributes = SubResource("CameraAttributesPractical_ql4er")
+current = true
+fov = 25.0
+
+[node name="Label3D" type="Label3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.10202)
+visible = false
+text = "Test"
+font_size = 16
+
+[node name="TestWideLabel" type="Label3D" parent="Camera3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, -2.46092)
+visible = false
+text = "Test label, test label
+This is a test label...
+How long can I go on like this?
+It's a test."
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.642787, 0.766044, 0, -0.766044, 0.642787, 0, 1.76311, 0)
+
+[node name="UnderLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 1.76311, 0)
+light_energy = 0.1
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+
+[node name="ShapeCast3D" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_1iwgv")
+target_position = Vector3(0, 0, 0)
+
+[node name="bg" type="MeshInstance3D" parent="."]
+transform = Transform3D(-25, -2.18557e-06, 0, 2.18557e-06, -25, 0, 0, 0, -0.291, 0, 0, -6.46026)
+visible = false
+mesh = SubResource("SphereMesh_clkui")

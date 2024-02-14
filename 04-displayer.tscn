@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://xqu2a1s4nqyd"]
+
+[ext_resource type="PackedScene" uid="uid://cwioo4wbswuy6" path="res://addons/desktoptoy/desktoptoy.tscn" id="1_4cwa3"]
+
+[node name="04-displayer" type="Node3D"]
+
+[node name="desktoptoy" parent="." instance=ExtResource("1_4cwa3")]
